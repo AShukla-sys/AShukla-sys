@@ -1,0 +1,22 @@
+DECLARE
+a number;
+b number;
+c number;
+ procedure findmin(x in number, y number, z out number)
+
+IS
+BEGIN
+if(x<y) THEN
+z:=x;
+ELSE
+z:=y;
+END IF;
+END;
+ 
+BEGIN
+a:=25;
+b:=45;
+findmin(a,b,c);
+dbms_output.put_line('minimum is:' || c);
+END;
+/
