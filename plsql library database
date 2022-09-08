@@ -1,0 +1,40 @@
+/*
+CREATE TABLE Borrower ( Roll_no int, Name varchar(30), DateofIssue date, NameofBook varchar(30), Status char(1));
+
+CREATE TABLE Fine (Roll_no int, Date1 date, Amt int);
+
+insert into Borrower values(1, 'Aman', '09-01-2022', 'TOC', 'I');
+
+insert into Borrower values(2, 'Sallu', '01-01-2022', 'ML', 'I');
+
+insert into Borrower values (3, 'Adam', '09-06-2022', 'CN', 'I');
+
+insert into Borrower values(4, 'Kariman', '09-20-2022', 'OS', 'I');
+insert into Borrower values(20,'Rishu','05-08-2002','Physics','I');
+insert into Borrower values(10,'Luke','10-08-2022',' Mathematics','I');
+insert into Borrower values(40,'Alex','2-07-2002','Chemistry','I');
+select * from Borrower;
+select * from Fine;
+*/
+
+DECLARE
+rollno number;
+name1 varchar(20);
+amt int;
+doi date;
+System date date;
+number of days number(20);
+
+roll_number number :=: roll_no;
+
+BEGIN
+rollno: =: rollno;
+name1= :=: name1
+select Sysdate into system date form deal;
+select date of issue into doi from borrow  where roll= rollno and book name= name1;
+dbms.output put line(doi);
+if no of days>15 and no of days <30 then
+amn: = no of days*5
+
+    dbms.output_put_line(
+ 
