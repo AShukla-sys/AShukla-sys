@@ -1,0 +1,118 @@
+ubuntu@ubuntu-OptiPlex-5000:~$ mongosh
+Current Mongosh Log ID:	634668e9c3ca8175b2f69284
+Connecting to:		mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.0
+Using MongoDB:		6.0.2
+Using Mongosh:		1.6.0
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2022-10-12T09:59:00.122+05:30: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2022-10-12T09:59:00.421+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+   2022-10-12T09:59:00.421+05:30: vm.max_map_count is too low
+------
+
+------
+   Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+   metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+   
+   The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+   and anyone you share the URL with. MongoDB may use this information to make product
+   improvements and to suggest MongoDB products and deployment options to you.
+   
+   To enable free monitoring, run the following command: db.enableFreeMonitoring()
+   To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+------
+
+test> show dbs
+Abhi      72.00 KiB
+admin    152.00 KiB
+config   108.00 KiB
+db1      264.00 KiB
+local     72.00 KiB
+prajyot   56.00 KiB
+tb2       72.00 KiB
+test> use db1
+switched to db db1
+db1> show collections
+emp
+info
+library
+Sallu
+stud
+db1> db.system.version.find()
+
+db1> db.createCollection('information')
+{ ok: 1 }
+db1> show dbs
+Abhi      72.00 KiB
+admin    152.00 KiB
+config   108.00 KiB
+db1      272.00 KiB
+local     72.00 KiB
+prajyot   56.00 KiB
+tb2       72.00 KiB
+db1> show collections
+emp
+info
+information
+library
+Sallu
+stud
+db1> dn.information.insertOne({'id':1,'name':'sec'})
+ReferenceError: dn is not defined
+db1> db.information.insertOne({'id':1,'name':'sec'})
+{
+  acknowledged: true,
+  insertedId: ObjectId("63466a1803e3601a1047f086")
+}
+db1> db.information.insertOne({'id':2,'name':'batch'})
+{
+  acknowledged: true,
+  insertedId: ObjectId("63466a2e03e3601a1047f087")
+}
+db1> db.information.insertOne({'id':3,'name':'city'})
+{
+  acknowledged: true,
+  insertedId: ObjectId("63466a4d03e3601a1047f088")
+}
+db1> db.information.find()
+[
+  { _id: ObjectId("63466a1803e3601a1047f086"), id: 1, name: 'sec' },
+  { _id: ObjectId("63466a2e03e3601a1047f087"), id: 2, name: 'batch' },
+  { _id: ObjectId("63466a4d03e3601a1047f088"), id: 3, name: 'city' }
+]
+db1> db.information.update({"name":"sec"},{$set:{"name":"city"}})
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+db1> db.information.find()
+[
+  { _id: ObjectId("63466a1803e3601a1047f086"), id: 1, name: 'city' },
+  { _id: ObjectId("63466a2e03e3601a1047f087"), id: 2, name: 'batch' },
+  { _id: ObjectId("63466a4d03e3601a1047f088"), id: 3, name: 'city' }
+]
+db1> db.information.remove("id":2)
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:26)
+
+> 1 | db.information.remove("id":2)
+    |                           ^
+  2 |
+
+db1> db.information.remove({"id":2})
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 1 }
+db1> db.information.find()
+[
+  { _id: ObjectId("63466a1803e3601a1047f086"), id: 1, name: 'city' },
+  { _id: ObjectId("63466a4d03e3601a1047f088"), id: 3, name: 'city' }
+]
+db1> 
+
