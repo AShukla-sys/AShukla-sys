@@ -1,0 +1,152 @@
+/****************************************************This application helps in understanding the ADC peripheral  in PIC microcontrollers.
+	The analog voltage is applied to analog pin AN0(PORTA0) of the microntroller.
+	The resultant digital data is put on serial port.
+		The Terminal settings for PC are
+		1.> Baudrate --> 19200
+		2.> Parity   --> None
+		3.> Databits --> 8
+		4.> Stop bits --> 1
+		
+/** I N C L U D E S ********/
+
+#include<p18f4550.h>
+#include<delays.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define Channel0 0b00000000
+#define Channel1 0b00000100
+
+
+/** P R I V A T E  P R O T O T Y P E S ***************************************/
+void ADC_Init(void);
+void Select_Channel(unsigned char Channel);
+unsigned int Get_ADC_Result(void);
+void Start_Conversion(void);
+void TXbyte(char data);
+void myMsDelay (unsigned int time);
+
+unsigned char String[]={"ADC Output\n\r"};
+unsigned char String1[]={"       "};
+
+/** V E C T O R  R E M A P P I N G *******************************************/
+
+
+extern void _startup (void);  // See c018i.c 
+#pragma code _RESET_INTERRUPT_VECTOR = 0x1000
+void _reset (void)
+{
+    _asm goto _startup _endasm
+}
+#pragma code
+
+#pragma code _HIGH_INTERRUPT_VECTOR = 0x1008
+void _high_ISR (void)
+{
+    //_asm goto High_ISR _endasm
+}
+
+#pragma code _LOW_INTERRUPT_VECTOR = 0x1018
+void _low_ISR (void)
+{
+   // _asm goto Low_ISR _endasm
+}
+
+#pragma code
+
+/** D E C L A R A T I O N S **************************************************/
+
+#pragma code
+
+void ADC_Init()
+{
+ ADCON0=0x00;	//A/D Module is OFF no channel selected
+ ADCON1=0b00001110;	// Reference as VDD & VSS, AN0 set as analog pins
+ ADCON2=0b10001110; // Result is right Justified
+					//Acquisition Time 2TAD
+					//ADC Clk FOSC/64
+ PIR1bits.ADIF=0;		//clear ADC conversion interrupt
+ //PIE1bits.ADIE=1;		//enable adc conversion interrupt
+// INTCONbits.PEIE=1;		//ebable peripheral interrupt
+ ADCON0bits.ADON=1; //Turn ON ADC module
+}
+
+void Select_Channel(unsigned char Channel)
+{
+ ADCON0=ADCON0 & 0b11000001;	
+ ADCON0=ADCON0 | Channel;	//selecting channel no 0
+}
+
+void Start_Conversion()
+{
+ ADCON0bits.GO=1;
+}
+
+
+//If you do not wish to use adc conversion interrupt you can use this
+//to do conversion manually. It assumes conversion format is right adjusted
+unsigned int Get_ADC_Result()
+{
+ unsigned int ADC_Result=0;
+ while(ADCON0bits.GO);
+ ADC_Result=ADRESL;
+ ADC_Result|=((unsigned int)ADRESH) << 8;
+ return ADC_Result;
+} 
+
+void TXbyte(char data)
+{
+ while(TXSTAbits.TRMT==0);
+ TXREG = data;
+}
+
+void myMsDelay (unsigned int time)
+{
+	unsigned int i, j;
+	for (i = 0; i < time; i++)
+		for (j = 0; j < 710; j++);/*Calibrated for a 1 ms delay in MPLAB*/
+}
+
+void main()
+{ 
+ unsigned char temp=0;
+ unsigned char i=0;
+ unsigned int adc_val;
+ unsigned char val, pot0[6];
+ SSPCON1 = 0;        // Make sure SPI is disabled	//Refer Datasheet
+ TRISCbits.TRISC7=1; // RX
+ TRISCbits.TRISC6=0; // TX
+ SPBRG = 0x71;
+ SPBRGH = 0x02;      // 0x0271 for 48MHz -> 19200 baud XTAL=20MHz, Fosc=48Mhz 
+ TXSTA = 0x24;       // TX enable BRGH=1
+ RCSTA = 0x90;       // continuous RX
+ BAUDCON = 0x08;     // BRG16 = 1
+ temp = RCREG;       // Empty buffer
+ temp = RCREG;       // Empty buffer
+ ADC_Init();		// Init ADC peripheral
+ //INTCONbits.GIE=1;	//Enable global interrupts
+ for(i=0;String[i]!='\0';i++)
+ {
+  TXbyte(String[i]);
+ }
+ while(1)
+ {
+  Select_Channel(Channel0);		//select channel no
+  Start_Conversion();		//Trigger conversion
+  adc_val= Get_ADC_Result();
+  itoa(adc_val,pot0);
+  for(i=0;pot0[i]!='\0';i++)
+ 	{
+  
+  TXbyte(pot0[i]);
+ 	}
+  myMsDelay(300);
+  TXbyte('\r');
+	for(i=0;String1[i]!='\0';i++)
+ 	{
+  	TXbyte(String1[i]);
+ 	}
+  TXbyte('\r');
+  		//Delay between conversions. It is a library function,refer delays.h file in MCC18 installation directory
+ }
+}
