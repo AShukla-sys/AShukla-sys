@@ -1,0 +1,65 @@
+
+import numpy as np
+import pandas as pd
+import math
+df=pd.read_csv('raw_data.csv')
+df
+
+s_values=df['math score'].sum()
+c_values=df['math score'].count()
+mean=s_values/c_values
+print(mean)
+
+np.sort(df['math score'])
+
+middle_index=math.floor(c_values/2)
+median=np.sort(df['math score'])[middle_index]
+print(median)
+max_value=np.sort(df['math score'])[-1]
+print(max_value)
+min_value=np.sort(df['math score'])[0]
+print(min_value)
+def max_value(variable):
+    return np.sort(df[variable])[-1]
+max_value('math score')
+
+# median value using function
+def median_value(variable):
+    middle_index=math.floor(c_values/2)
+    return np.sort(df[variable])[middle_index]
+median_value('math score')
+52.285714
+df['math score'].std()
+28.123452338370043
+# standard deviation using function
+def std_dev(variable):
+    lst=[]
+    for i in range(c_values):
+        sigma=(df[variable][i]-mean)**2
+        lst.append(sigma)
+    return np.sqrt(sum(lst)/c_values)
+std_dev('math score')
+26.515045145117497
+std_dev('reading score')
+24.85212792040826
+df.describe()
+
+# variance and standard deviation
+def variance(data,ddof=0):
+    n = len(data)
+    mean = sum(data) / n
+    return sum((x - mean) ** 2 for x in data) / (n - ddof)
+
+def stdev(data):
+    var = variance(data)
+    std_dev = math.sqrt(var)
+    return std_dev
+variance(df['math score'])
+703.047619047619
+stdev(df['math score'])
+26.515045145117497
+stdev(df['reading score'])
+14.800525516195549
+stdev(df['placement offer count'])
+1.1331154474650633
+ 

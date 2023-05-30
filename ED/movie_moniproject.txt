@@ -1,0 +1,91 @@
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+df=pd.read_csv('movie.csv')
+df
+
+
+df.head()
+
+df.tail()
+
+df.describe()
+
+df.info
+
+
+
+df.dtypes
+
+df.isnull().sum()
+
+df.columns
+
+df=df.dropna()
+df.isnull().sum()
+
+# Data visualization
+sns.countplot(df['vote_count'])
+plt.title('Distribution of vote counts')
+plt.show()
+
+sns.countplot(data=df,x='vote_count')
+plt.title('Distribution of vote counts')
+plt.show()
+
+sns.boxplot(df['popularity'])
+
+
+plt.hist(df['popularity'],bins=10)
+plt.xlabel('popularity')
+plt.ylabel('frequency')
+plt.title('distribution of movie popularity')
+plt.show()
+
+x=df[['popularity']]
+y=df['vote_count']
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.25,random_state=0)
+print(xtrain)
+print(xtest)
+ 
+from sklearn.preprocessing import StandardScaler
+sc_scale=StandardScaler()
+xtrain=sc_scale.fit_transform(xtrain)
+xtest=sc_scale.transform(xtest)
+from sklearn.linear_model import LogisticRegression
+classifier=LogisticRegression()
+classifier.fit(xtrain,ytrain)
+LogisticRegression()
+In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+ypred=classifier.predict(xtest)
+correlation_matrix=df.corr()
+print('the correlation matrix is:',correlation_matrix)
+the correlation matrix is:               popularity  vote_count  vote_average
+popularity      1.000000    0.567026      0.154935
+vote_count      0.567026    1.000000      0.272952
+vote_average    0.154935    0.272952      1.000000
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(ypred,ytest)
+print('confusion matrix is:',cm)
+confusion matrix is: [[18  2  1 ...  1  1  1]
+ [ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]
+ ...
+ [ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]
+ [ 0  0  0 ...  0  0  0]]
+sns.heatmap(correlation_matrix,annot=True)
+<AxesSubplot: >
+
+from sklearn.metrics import accuracy_score
+print('the accuracy is:',accuracy_score(ypred,ytest)*100,'%')
+the accuracy is: 0.921474358974359 %
+top_movies = df.nlargest(10, 'popularity')
+best_movies=top_movies[['title','popularity','overview']]
+print(best_movies)
+                                                title  popularity  \
+1                             

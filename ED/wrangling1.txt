@@ -1,0 +1,26 @@
+import pandas as pd
+import numpy as np
+df=pd.read_csv('/home/ubuntu/archive(1)/horror_movies.csv')
+df
+
+df.head()
+df.tail()
+df.head(10)
+df.isnull()
+df.isnull().sum()
+df.isna()
+df.info()
+df=df.dropna()
+df.info()
+df.dtypes
+df['id']=df['id'].astype('float64')
+df.describe()
+
+df.info()
+pd.get_dummies(df['status'])
+from sklearn import preprocessing
+from sklearn.preprocessing import MinMaxScaler
+scaler=MinMaxScaler()
+cols=['vote_count','vote_average']
+df[cols]= scaler.fit_transform(df[cols])
+df[cols]

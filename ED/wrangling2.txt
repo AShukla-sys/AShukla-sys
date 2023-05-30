@@ -1,0 +1,25 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+df=pd.read_csv("raw_data.csv")
+df
+df.describe()
+df.head()
+df.tail()
+df.info()
+df.dtypes
+df.isnull()
+df.isnull().sum()
+df['reading score']
+# data transformation
+plt.figure(figsize=(10,8))
+df.boxplot()
+plt.show()
+plt.figure(figsize=(6,9))
+df.boxplot()
+plt.show()
+sns.pairplot(df)
+plt.show()
+df.boxplot(['math score', 'reading score', 'writing score'])
+sns.boxplot(data=df, x='math score');
